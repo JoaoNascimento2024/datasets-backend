@@ -1,10 +1,16 @@
 import mongoose from "mongoose";
 
-export default async function dbConnect() {
-    try{
-        await mongoose.connect("mongodb+srv://araujonascimento:zBiZ0VvZP2TBf5rG@cluster0.yglu0f2.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
-        console.log("Conectado")
-    }catch(error){
-        console.log("Não conectado")
+/**
+ * Open connection with MongoDB Atlas by Mongoose
+ */
+async function dbConnect(){
+    try {
+        await mongoose.connect(process.env.STRING_CONNECTION);
+        console.log("MongoDB connected");
+    } catch (error) {
+        console.log("Error in connection with MongoDB: ", error);
+        process.exit(1);
     }
 }
+
+export default dbConnect;
