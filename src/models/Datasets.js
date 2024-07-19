@@ -1,4 +1,3 @@
-import { type } from "express/lib/response";
 import mongoose from "mongoose";
 
 const datasetSchema = new mongoose.Schema({
@@ -23,13 +22,16 @@ const datasetSchema = new mongoose.Schema({
         type : String,
     },
     filePath : {
-        type : String
+        type : String,
+        required : [true, "Not file sended"]
     },
+    /*
     createdBy : {
         type : mongoose.Schema.Types.ObjectId,
-        ref : "User"
+        ref : "Users"
     },
-    /*columns : {
+
+    columns : {
         type : Array
     }*/
 }, 
