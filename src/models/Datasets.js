@@ -2,12 +2,11 @@ import mongoose from "mongoose";
 
 const datasetSchema = new mongoose.Schema({
     id : {
-        type : mongoose.Schema.Types.ObjectId,
-        require : true
+        type : mongoose.Schema.Types.ObjectId
     },
     name : {
         type : String,
-        minlength : 10,
+        minlength : 1,
         maxlength : 50,
         required: true,
         unique : true
