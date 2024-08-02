@@ -1,4 +1,4 @@
-import Datasets from "../models/Datasets.js";
+import Datasets from "../models/Dataset.js";
 
 export async function createDataset(req, res){
     try{    
