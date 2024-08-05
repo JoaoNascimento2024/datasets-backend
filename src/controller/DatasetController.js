@@ -1,4 +1,5 @@
 import Datasets from "../models/Dataset.js";
+import {StatusCodes} from "http-status-codes";
 
 export async function createDataset(req, res){
     try{    
@@ -6,14 +7,14 @@ export async function createDataset(req, res){
         const filePath = req.file ? req.file.path : null;
 
         if (filePath === null){
-            return res.status(400).send({message : "File not send"});
+            return res.status(StatusCodes.BAD_REQUEST).send({message : "File not send"});
         }
   
         const dataset = new Datasets({name, description, filePath});
         await dataset.save();
-        res.status(201).send();
+        res.status(StatusCodes.CREATED).send();
     }catch(error){
-        res.status(400).send(error);
+        res.status(StatusCodes.BAD_REQUEST).send(error);
     }
 }
 
@@ -22,6 +23,6 @@ export async function getDatasets(req, res){
         const datasets = await Datasets.find({});
         res.send(datasets);
     }catch(error){
-        res.status(500).send(error);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
     }
 }

@@ -1,5 +1,6 @@
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
+import { StatusCodes } from "http-status-codes";
 
 /**
  * CreateUser
@@ -13,8 +14,8 @@ export async function createUser(req, res){
 
         const newUser = new User({username, email, password : hashPassword});
         await newUser.save();
-        res.status(201).json({username, email});
+        res.status(StatusCodes.CREATED).json({username, email});
     }catch(error){
-        res.status(500).json({messageXXX : error.message});
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message : error.message});
     }
 }
