@@ -9,10 +9,10 @@ import { StatusCodes } from "http-status-codes";
  */
 export async function createUser(req, res){
     try{
-        const {username, email, password} = req.body;
+        const {username, email, password, profile } = req.body;
         const hashPassword = await bcrypt.hash(password, 12);
 
-        const newUser = new User({username, email, password : hashPassword});
+        const newUser = new User({username, email, password : hashPassword, profile});
         await newUser.save();
         res.status(StatusCodes.CREATED).json({username, email});
     }catch(error){
