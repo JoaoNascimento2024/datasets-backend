@@ -1,43 +1,45 @@
 import mongoose from "mongoose";
 
+/**
+ * Schema para a coleção de Datasets no MongoDB. Define as propriedades e as regras para cada
+ * campo no documento de Datasets, incluindo validações de tipo, comprimento e obrigatoriedade.
+ */
 const datasetSchema = new mongoose.Schema({
-    id : {
-        type : mongoose.Schema.Types.ObjectId
+    // Identificador único gerado automaticamente para cada Dataset
+    id: {
+        type: mongoose.Schema.Types.ObjectId
     },
-    name : {
-        type : String,
-        minlength : 1,
-        maxlength : 50,
+    // Nome do Dataset, deve ser único e é obrigatório
+    name: {
+        type: String,
+        minlength: 1,
+        maxlength: 50,
         required: true,
-        unique : true
-        //match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        unique: true
     },
-    /*numColumns : {
-        type : Number,
-        min: 1,
-        max: 20 
-    },*/
-    description : {
-        type : String,
+    // Descrição opcional do Dataset
+    description: {
+        type: String
     },
-    filePath : {
-        type : String,
-        required : [true, "Not file sended"]
+    // Caminho do arquivo associado ao Dataset, obrigatório
+    filePath: {
+        type: String,
+        required: [true, "Not file sended"]
     },
-    /*
-    createdBy : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : "Users"
-    },
-
-    columns : {
-        type : Array
-    }*/
+    // Referência ao usuário que criou o Dataset
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    }
 }, 
-//The propertie timestamp update timestamp to created and updated operations
-{ timestamps : true });
+/**
+ * Opções do schema:
+ * - timestamps: Adiciona automaticamente as propriedades `createdAt` e `updatedAt` ao schema,
+ *   representando a data de criação e a última atualização do documento, respectivamente.
+ */
+{ timestamps: true });
 
+// Cria o modelo Mongoose com base no schema definido acima
 const Datasets = mongoose.model("Datasets", datasetSchema);
 
 export default Datasets;
-
