@@ -1,0 +1,10 @@
+{
+    "source" : {
+        "include": ["./src/controller/","./src/models/","./src/middleware/"],
+        "includePattern": ".+\\.js(doc|x)?$",
+        "excludePattern": "(^|\\/|\\\\)_"
+    },
+    "opts": {
+        "destination": "./docs"
+    }
+}
