@@ -1,3 +1,8 @@
+/**
+ * @module ModelsUser
+ * @Description Funções do model user
+ */
+
 import mongoose from "mongoose";
 
 /**

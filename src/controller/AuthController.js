@@ -1,3 +1,8 @@
+/**
+ * @module ControllerAuth
+ * @Description Funções do controller auth
+ */
+
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import User from "../models/User.js";

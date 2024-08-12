@@ -1,3 +1,8 @@
+/**
+ * @module ControllerPermission
+ * @Description Funções do controller permission
+ */
+
 import Permission from "../models/Permission.js";
 import { StatusCodes } from "http-status-codes";
 

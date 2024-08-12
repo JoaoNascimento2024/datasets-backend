@@ -1,3 +1,8 @@
+/**
+ * @module ModelsDataset
+ * @Description Funções do model dataset
+ */
+
 import mongoose from "mongoose";
 
 /**

@@ -1,6 +1,6 @@
 {
     "source" : {
-        "include": ["./src/controller/","./src/models/","./src/middleware/"],
+        "include": ["./src/controller/","./src/models/"],
         "includePattern": ".+\\.js(doc|x)?$",
         "excludePattern": "(^|\\/|\\\\)_"
     },

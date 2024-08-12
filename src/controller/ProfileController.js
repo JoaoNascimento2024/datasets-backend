@@ -1,3 +1,8 @@
+/**
+ * @module ControllerProfile
+ * @Description Funções do controller profile
+ */
+
 import Profile from "../models/Profile.js";
 import { StatusCodes } from "http-status-codes";
 

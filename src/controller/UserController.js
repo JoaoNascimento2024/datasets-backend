@@ -1,3 +1,8 @@
+/**
+ * @module ControllerUser
+ * @Description Funções do controller user
+ */
+
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import { StatusCodes } from "http-status-codes";

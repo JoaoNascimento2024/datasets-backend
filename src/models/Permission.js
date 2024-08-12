@@ -1,3 +1,8 @@
+/**
+ * @module ModelsPermission
+ * @Description Funções do model permission
+ */
+
 import mongoose from "mongoose";
 
 /**

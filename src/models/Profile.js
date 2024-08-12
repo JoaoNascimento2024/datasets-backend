@@ -1,3 +1,8 @@
+/**
+ * @module ModelsProfile
+ * @Description Funções do model profile
+ */
+
 import mongoose from "mongoose";
 
 /**

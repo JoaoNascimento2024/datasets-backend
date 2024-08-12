@@ -1,3 +1,8 @@
+/**
+ * @module ControllerDataset
+ * @Description Funções do controller dataset
+ */
+
 import Datasets from "../models/Dataset.js";
 import { StatusCodes } from "http-status-codes";
 
