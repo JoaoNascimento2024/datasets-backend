@@ -5,6 +5,8 @@
 
 import Datasets from "../models/Dataset.js";
 import { StatusCodes } from "http-status-codes";
+import { datasetSchemaValidate } from "../middleware/validateDataset.js";
+import sanitizeHtml from "sanitize-html";
 
 /**
  * Cria um novo dataset com base nos dados recebidos no corpo da requisição e o caminho de um arquivo enviado.
@@ -15,7 +17,13 @@ import { StatusCodes } from "http-status-codes";
  */
 export async function createDataset(req, res) {
     try {
-        const { name, description } = req.body;
+        
+        let { name, description } = req.body;
+
+        name = sanitizeHtml(name);
+        description = sanitizeHtml(description);
+        await datasetSchemaValidate.validate({name, description}, {abortEarly : false});
+        
         const filePath = req.file ? req.file.path : null;
 
         if (filePath === null) {

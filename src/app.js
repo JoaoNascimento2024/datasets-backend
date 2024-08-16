@@ -3,6 +3,7 @@ import config from "./config/config.js";
 import {StatusCodes} from 'http-status-codes';
 import swaggerSpec from "./config/config-swagger.js";
 import swaggerUi from "swagger-ui-express";
+import helmet from "helmet";
 
 import datasetRouter from "./routers/DatasetRouter.js";
 import userRouter from "./routers/UserRouter.js";
@@ -12,6 +13,8 @@ import permissionRouter from "./routers/PermissionRouter.js";
 
 const app = express();
 app.use(express.json());
+
+app.use(helmet());
 
 app.get("/",(req,res) => {
     res.status(StatusCodes.OK).send(`API versão ${config.versaoAPI}.`)
