@@ -7,6 +7,7 @@ import Datasets from "../models/Dataset.js";
 import { StatusCodes } from "http-status-codes";
 import { datasetSchemaValidate } from "../utils/validateControllers.js";
 import connectAMQP from "../config/connectAMQP.js";
+import mongoose from "mongoose";
 
 
 /**
@@ -17,8 +18,13 @@ import connectAMQP from "../config/connectAMQP.js";
  * @returns {void} - Não retorna um valor, mas envia uma resposta HTTP.
  */
 export async function createDataset(req, res) {
+    
+    // Using Mongoose's default connection
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    
     try {
-        
+
         const validatedData = await datasetSchemaValidate.validate(req.body, {abortEarly : false});
         
         const filePath = req.file ? req.file.path : null;
@@ -29,8 +35,9 @@ export async function createDataset(req, res) {
   
         //Database
         const {name, description} = validatedData;
-        const dataset = new Datasets({ name, description, filePath });
-        await dataset.save();
+        //const dataset = new Datasets({ name, description, filePath });
+        //dataset.save();    
+        await Datasets.create([{ name, description, filePath }], {session})
 
         //AMQP
         const channel = await connectAMQP();
@@ -42,12 +49,15 @@ export async function createDataset(req, res) {
             throw new Error("Failed to connect AMQP");
         }    
 
-
+        //Commit session
+        await session.commitTransaction();          
 
         res.status(StatusCodes.CREATED).send();
     } catch (error) {
+        await session.abortTransaction();
         res.status(StatusCodes.BAD_REQUEST).send(error);
     }
+    session.endSession();  
 }
 
 /**
