@@ -1,7 +1,7 @@
 import express from "express";
 import config from "./config/config.js";
 import {StatusCodes} from 'http-status-codes';
-import swaggerSpec from "./config/config-swagger.js";
+import swaggerSpec from "./config/configSwagger.js";
 import swaggerUi from "swagger-ui-express";
 import helmet from "helmet";
 

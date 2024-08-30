@@ -7,7 +7,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js",
-    "doc": "jsdoc -c jsdoc.json"
+    "doc": "jsdoc -c jsdoc.json",
+    "minio:up": "docker-compose up -d minio",
+    "minio:down": "docker-compose down",
+    "minio:logs": "docker-compose logs minio"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +25,7 @@
     "http-status-codes": "^2.3.0",
     "jsdoc": "^4.0.3",
     "jsonwebtoken": "^9.0.2",
+    "minio": "^8.0.1",
     "mongodb": "^6.8.0",
     "mongoose": "^8.4.5",
     "multer": "^1.4.5-lts.1",

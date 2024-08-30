@@ -8,6 +8,7 @@ import { StatusCodes } from "http-status-codes";
 import { datasetSchemaValidate } from "../utils/validateControllers.js";
 import connectAMQP from "../config/connectAMQP.js";
 import mongoose from "mongoose";
+import minioClient from "../config/configMinio.js";
 
 
 /**
@@ -28,6 +29,7 @@ export async function createDataset(req, res) {
         const validatedData = await datasetSchemaValidate.validate(req.body, {abortEarly : false});
         
         const filePath = req.file ? req.file.path : null;
+        const fileName = req.file ? req.file.fileName : null;
 
         if (filePath === null) {
             return res.status(StatusCodes.BAD_REQUEST).send({ message: "File not send" });
@@ -48,6 +50,12 @@ export async function createDataset(req, res) {
         }else{
             throw new Error("Failed to connect AMQP");
         }    
+
+
+        //Minio
+        minioClient.fPutObject("datasets",fileName,filePath,{
+            "Content-Type" : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        });
 
         //Commit session
         await session.commitTransaction();          
