@@ -1,5 +1,6 @@
 import multer from "multer";
 import { v4 as uuidv4 } from "uuid";
+import minioClient from "../config/configMinio.js";
 
 /**
  * Configuração do storage para o Multer, definindo onde e como os arquivos de upload serão armazenados.
@@ -35,4 +36,18 @@ const storage = multer.diskStorage({
  * Cria uma instância do multer com a configuração de armazenamento definida.
  * O objeto `upload` pode ser usado como middleware em rotas que aceitam uploads de arquivos.
  */
-export const upload = multer({ storage: storage });
+//export const upload = multer({ storage: storage });
+export const upload = multer({ storage: multer.memoryStorage });
+
+export const uploadMinio = async (bucketName, fileName, fileData) => {
+  return new Promise((resolve, reject) => {
+    minioClient.putObject(bucketName, fileName, fileData, (err, etag) => {
+        if (err)
+            reject(err);
+        else
+            resolve(etag);
+    })
+  });  
+};
+
+
