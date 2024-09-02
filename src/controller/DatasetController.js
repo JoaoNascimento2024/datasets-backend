@@ -32,9 +32,9 @@ export async function createDataset(req, res) {
         //const filePath = req.file ? req.file.path : null;
         //const fileName = req.file ? req.file.fileName : null;
 
-        const file = req.file ? req.file.path : null;
+        const file = req.file ? req.file : null;
         const bucketName = "datasets";
-        const fileName = `${uuidv4}.xlsx`;        
+        const filePath = `${uuidv4()}.xlsx`;        
 
         if (file === null) {
             await session.abortTransaction();
@@ -42,18 +42,20 @@ export async function createDataset(req, res) {
             return res.status(StatusCodes.BAD_REQUEST).send({ message: "File not send" });
         }       
 
-        await uploadMinio(bucketName,fileName,file.buffer);
+        //fileSize = file.size;
+
+        await uploadMinio(bucketName,filePath,file.buffer);
   
         //Database
         const {name, description} = validatedData;
         //const dataset = new Datasets({ name, description, filePath });
         //dataset.save();    
-        await Datasets.create([{ name, description, fileName }], {session})
+        await Datasets.create([{ name, description, filePath }], {session})
 
         //AMQP
         const channel = await connectAMQP();
         if (channel){
-            const message = JSON.stringify({name, fileName});
+            const message = JSON.stringify({name, filePath});
             channel.sendToQueue("datasets", Buffer.from(message)); //Transform in bytes
             console.log(`Send message to amqp: ${message}`);
         }else{
