@@ -26,11 +26,7 @@ export async function createDataset(req, res) {
     session.startTransaction();
     
     try {
-
         const validatedData = await datasetSchemaValidate.validate(req.body, {abortEarly : false});
-        
-        //const filePath = req.file ? req.file.path : null;
-        //const fileName = req.file ? req.file.fileName : null;
 
         const file = req.file ? req.file : null;
         const bucketName = "datasets";
@@ -42,14 +38,11 @@ export async function createDataset(req, res) {
             return res.status(StatusCodes.BAD_REQUEST).send({ message: "File not send" });
         }       
 
-        //fileSize = file.size;
-
+        //Minio
         await uploadMinio(bucketName,filePath,file.buffer);
   
         //Database
         const {name, description} = validatedData;
-        //const dataset = new Datasets({ name, description, filePath });
-        //dataset.save();    
         await Datasets.create([{ name, description, filePath }], {session})
 
         //AMQP
