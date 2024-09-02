@@ -8,7 +8,6 @@ import { StatusCodes } from "http-status-codes";
 import { datasetSchemaValidate } from "../utils/validateControllers.js";
 import connectAMQP from "../config/connectAMQP.js";
 import mongoose from "mongoose";
-import minioClient from "../config/configMinio.js";
 import { v4 as uuidv4 } from "uuid";
 import { uploadMinio } from "../middleware/uploadFileMiddleware.js";
 
