@@ -23,7 +23,7 @@ const verifyToken = (req, res, next) => {
         const decoded = jwt.verify(token, process.env.SECRET);
 
         // Armazena o ID do usuário decodificado no objeto de requisição para uso posterior
-        req.userID = decoded;
+        req.userID = decoded.userID;
 
         // Se o token é válido, continua para o próximo middleware
         next();
