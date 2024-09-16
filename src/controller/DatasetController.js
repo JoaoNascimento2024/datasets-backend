@@ -4,6 +4,7 @@
  */
 
 import Datasets from "../models/Dataset.js";
+import DetailsDatasets from "../models/DetailsDataset.js";
 import { StatusCodes } from "http-status-codes";
 import { datasetSchemaValidate } from "../utils/validateControllers.js";
 import connectAMQP from "../config/connectAMQP.js";
@@ -45,12 +46,13 @@ export async function createDataset(req, res) {
 
         //Database
         const { name, description } = validatedData;
-        await Datasets.create([{ name, description, filePath, user }], { session })
+        const dataset = await Datasets.create([{ name, description, filePath, user }], { session })
+        const idDataset = dataset[0]._id;
 
         //AMQP
         const channel = await connectAMQP();
         if (channel) {
-            const message = JSON.stringify({ name, filePath });
+            const message = JSON.stringify({ name, filePath, idDataset });
             channel.sendToQueue("datasets", Buffer.from(message)); //Transform in bytes
             console.log(`Send message to amqp: ${message}`);
         } else {
@@ -80,8 +82,6 @@ export async function getDatasets(req, res) {
         const datasets = await Datasets.find({}).populate({
             path: "user",
         });
-
-
         res.json(datasets);
     } catch (error) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
@@ -107,12 +107,22 @@ export async function getDatasetsByUser(req, res) {
     }
 }
 
-export async function getDatasetsById(req, res) {
-    
-    const datasetID = req.params.datasetID;
-    
+export async function getDatasetsById(req, res) {    
+    const datasetID = req.params.datasetID;    
     try {
         const datasets = await Datasets.find({ _id: datasetID }).populate({
+            path: "user",
+        });
+        res.json(datasets[0]);
+    } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
+    }
+}
+
+export async function getDetailsDatasetsById(req, res) {    
+    const datasetID = req.params.datasetID;    
+    try {
+        const datasets = await DetailsDatasets.find({ dataset: datasetID }).populate({
             path: "user",
         });
         res.json(datasets[0]);
