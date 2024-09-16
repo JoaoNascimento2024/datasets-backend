@@ -19,53 +19,53 @@ import { uploadMinio } from "../middleware/uploadFileMiddleware.js";
  * @returns {void} - Não retorna um valor, mas envia uma resposta HTTP.
  */
 export async function createDataset(req, res) {
-    
+
     // Using Mongoose's default connection
     const session = await mongoose.startSession();
     session.startTransaction();
-    
+
     try {
-        const validatedData = await datasetSchemaValidate.validate(req.body, {abortEarly : false});
+        const validatedData = await datasetSchemaValidate.validate(req.body, { abortEarly: false });
 
         const file = req.file ? req.file : null;
         const bucketName = "datasets";
-        const filePath = `${uuidv4()}.xlsx`;      
-        
+        const filePath = `${uuidv4()}.xlsx`;
+
         //Referência do usuário logado
         const user = req.userID;
 
         if (file === null) {
             await session.abortTransaction();
-            session.endSession(); 
+            session.endSession();
             return res.status(StatusCodes.BAD_REQUEST).send({ message: "File not send" });
-        }       
+        }
 
         //Minio
-        await uploadMinio(bucketName,filePath,file.buffer);
-  
+        await uploadMinio(bucketName, filePath, file.buffer);
+
         //Database
-        const {name, description} = validatedData;
-        await Datasets.create([{ name, description, filePath, user }], {session})
+        const { name, description } = validatedData;
+        await Datasets.create([{ name, description, filePath, user }], { session })
 
         //AMQP
         const channel = await connectAMQP();
-        if (channel){
-            const message = JSON.stringify({name, filePath});
+        if (channel) {
+            const message = JSON.stringify({ name, filePath });
             channel.sendToQueue("datasets", Buffer.from(message)); //Transform in bytes
             console.log(`Send message to amqp: ${message}`);
-        }else{
+        } else {
             throw new Error("Failed to connect AMQP");
-        }    
+        }
 
         //Commit session
-        await session.commitTransaction();          
+        await session.commitTransaction();
 
         res.status(StatusCodes.CREATED).send();
     } catch (error) {
         await session.abortTransaction();
         res.status(StatusCodes.BAD_REQUEST).send(error);
     }
-    session.endSession();  
+    session.endSession();
 }
 
 /**
@@ -77,8 +77,12 @@ export async function createDataset(req, res) {
  */
 export async function getDatasets(req, res) {
     try {
-        const datasets = await Datasets.find({});
-        res.send(datasets);
+        const datasets = await Datasets.find({}).populate({
+            path: "user",
+        });
+
+
+        res.json(datasets);
     } catch (error) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
     }
@@ -94,8 +98,34 @@ export async function getDatasets(req, res) {
 export async function getDatasetsByUser(req, res) {
     let userID = req.params.userID;
     try {
-        const datasets = await Datasets.find({ user: userID });
-        res.send(datasets);
+        const datasets = await Datasets.find({ user: userID }).populate({
+            path: "user",
+        });
+        res.json(datasets);
+    } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
+    }
+}
+
+export async function getDatasetsById(req, res) {
+    
+    const datasetID = req.params.datasetID;
+    
+    try {
+        const datasets = await Datasets.find({ _id: datasetID }).populate({
+            path: "user",
+        });
+        res.json(datasets[0]);
+    } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
+    }
+}
+
+export async function deleteDatasets(req, res) {
+    let datasetID = req.params.datasetID;
+    try {
+        const datasets = await Datasets.deleteOne({ _id: datasetID });
+        res.json("Dataset deleted");
     } catch (error) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
     }

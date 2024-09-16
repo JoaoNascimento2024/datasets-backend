@@ -4,6 +4,7 @@ import {StatusCodes} from 'http-status-codes';
 import swaggerSpec from "./config/configSwagger.js";
 import swaggerUi from "swagger-ui-express";
 import helmet from "helmet";
+import cors from "cors";
 
 import datasetRouter from "./routers/DatasetRouter.js";
 import userRouter from "./routers/UserRouter.js";
@@ -13,6 +14,7 @@ import permissionRouter from "./routers/PermissionRouter.js";
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 app.use(helmet());
 

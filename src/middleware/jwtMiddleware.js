@@ -15,6 +15,7 @@ const verifyToken = (req, res, next) => {
     try {
         // O índice do token no header de autorização após 'Bearer '
         const INDICE_TOKEN = 1;
+        
 
         // Extrai o token do header de autorização
         const token = req.headers.authorization.split(" ")[INDICE_TOKEN];
@@ -28,6 +29,8 @@ const verifyToken = (req, res, next) => {
         // Se o token é válido, continua para o próximo middleware
         next();
     } catch (error) {
+        
+        
         // Caso ocorra um erro na verificação do token, envia uma resposta de não autorizado
         res.status(StatusCodes.UNAUTHORIZED).json({ message: "User not authorized" });
         return;
