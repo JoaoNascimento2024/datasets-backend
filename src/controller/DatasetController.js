@@ -11,6 +11,7 @@ import connectAMQP from "../config/connectAMQP.js";
 import mongoose from "mongoose";
 import { v4 as uuidv4 } from "uuid";
 import { uploadMinio } from "../middleware/uploadFileMiddleware.js";
+import minioClient from "../config/configMinio.js";
 
 /**
  * Cria um novo dataset com base nos dados recebidos no corpo da requisição e o caminho de um arquivo enviado.
@@ -105,6 +106,30 @@ export async function getDatasetsByUser(req, res) {
         res.json(datasets);
     } catch (error) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
+    }
+}
+
+export async function getDownloadFileByDatasetId(req, res) {    
+    try {
+        const datasetId = req.params.datasetId;
+        const dataset = await Datasets.findById(datasetId);
+
+        if (!dataset) {
+            return res.status(StatusCodes.NOT_FOUND).send('Dataset not found.');
+        }
+
+        const { filePath } = dataset;
+        const bucketName = 'datasets';
+
+        minioClient.getObject(bucketName, filePath, (err, dataStream) => {
+            if (err) {
+                return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send('Error accessing file: ' + err.message);
+            }
+            res.attachment(filePath);
+            dataStream.pipe(res);
+        });
+    } catch (err) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send('Internal server error.');
     }
 }
 
