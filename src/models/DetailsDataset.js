@@ -21,7 +21,7 @@ const datasetSchema = new mongoose.Schema({
         unique: true
     },
     // Referência ao usuário que criou o Dataset
-    dataset: {
+    dataset_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Dataset"
     }

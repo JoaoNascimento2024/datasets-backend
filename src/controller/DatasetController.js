@@ -46,7 +46,8 @@ export async function createDataset(req, res) {
 
         //Database
         const { name, description } = validatedData;
-        const dataset = await Datasets.create([{ name, description, filePath, user }], { session })
+        const status = "WAITING_PROCESSING";
+        const dataset = await Datasets.create([{ name, description, filePath, user, status }], { session })
         const idDataset = dataset[0]._id;
 
         //AMQP

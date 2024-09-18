@@ -26,6 +26,9 @@ const datasetSchema = new mongoose.Schema({
     description: {
         type: String
     },
+    status: {
+        type: String
+    },
     // Caminho do arquivo associado ao Dataset, obrigatório
     filePath: {
         type: String,
