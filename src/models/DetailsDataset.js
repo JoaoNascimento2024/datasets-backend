@@ -15,15 +15,14 @@ const datasetSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId
     },
     // Nome do Dataset, deve ser único e é obrigatório
-    details: {
-        type: String,
-        required: true,
-        unique: true
+    details: {      
+        type: Object
     },
     // Referência ao usuário que criou o Dataset
     dataset_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Dataset"
+        type : String,
+        //type: mongoose.Schema.Types.ObjectId,
+        //ref: "Dataset"
     }
 }, 
 /**

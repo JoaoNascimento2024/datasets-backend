@@ -111,7 +111,8 @@ export async function getDatasetsByUser(req, res) {
 
 export async function getDownloadFileByDatasetId(req, res) {    
     try {
-        const datasetId = req.params.datasetId;
+        const datasetId = req.params.datasetID;
+        console.log(datasetId);
         const dataset = await Datasets.findById(datasetId);
 
         if (!dataset) {
@@ -125,6 +126,7 @@ export async function getDownloadFileByDatasetId(req, res) {
             if (err) {
                 return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send('Error accessing file: ' + err.message);
             }
+            console.log("Download file: ", filePath);
             res.attachment(filePath);
             dataStream.pipe(res);
         });
@@ -146,12 +148,12 @@ export async function getDatasetsById(req, res) {
 }
 
 export async function getDetailsDatasetsById(req, res) {    
-    const datasetID = req.params.datasetID;    
+    const datasetID = req.params.datasetID;
+    console.log(datasetID);    
     try {
-        const datasets = await DetailsDatasets.find({ dataset: datasetID }).populate({
-            path: "user",
-        });
-        res.json(datasets[0]);
+        const detailsDataset = await DetailsDatasets.find({ dataset_id: datasetID });
+        console.log("detailsDataset",detailsDataset);
+        res.json(detailsDataset[0]);
     } catch (error) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
     }
