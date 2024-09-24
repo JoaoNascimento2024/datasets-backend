@@ -29,6 +29,10 @@ const datasetSchema = new mongoose.Schema({
     status: {
         type: String
     },
+    downloads: {
+        type: Number,
+        default: 0
+    },
     // Caminho do arquivo associado ao Dataset, obrigatório
     filePath: {
         type: String,
@@ -38,7 +42,8 @@ const datasetSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
-    }
+    },
+    
 }, 
 /**
  * Opções do schema:

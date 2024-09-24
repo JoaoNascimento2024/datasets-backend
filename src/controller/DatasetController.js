@@ -122,11 +122,14 @@ export async function getDownloadFileByDatasetId(req, res) {
         const { filePath } = dataset;
         const bucketName = 'datasets';
 
-        minioClient.getObject(bucketName, filePath, (err, dataStream) => {
+        minioClient.getObject(bucketName, filePath, async (err, dataStream) => {
             if (err) {
                 return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send('Error accessing file: ' + err.message);
             }
             console.log("Download file: ", filePath);
+
+            await Datasets.findByIdAndUpdate(datasetId, { $inc: { downloads: 1 } });
+            
             res.attachment(filePath);
             dataStream.pipe(res);
         });
@@ -148,8 +151,7 @@ export async function getDatasetsById(req, res) {
 }
 
 export async function getDetailsDatasetsById(req, res) {    
-    const datasetID = req.params.datasetID;
-    console.log(datasetID);    
+    const datasetID = req.params.datasetID;  
     try {
         const detailsDataset = await DetailsDatasets.find({ dataset_id: datasetID });
         console.log("detailsDataset",detailsDataset);
